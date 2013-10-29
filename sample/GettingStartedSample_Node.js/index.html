@@ -1,0 +1,277 @@
+<!--
+	D2LValence package, js api.
+
+	Copyright (c) 2012 Desire2Learn Inc.
+
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not
+	use this file except in compliance with the License. You may obtain a copy of
+	the license at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+	License for the specific language governing permissions and limitations under
+	the License.
+ -->
+
+<!doctype html>
+<html>
+<head>
+    <title>Desire2Learn Auth SDK Sample</title>
+    <style type = "text/css">
+        table.plain
+        {
+          border-color: transparent;
+          border-collapse: collapse;
+        }
+
+        table td.plain
+        {
+          padding: 5px;
+          border-color: transparent;
+        }
+
+        table th.plain
+        {
+          padding: 6px 5px;
+          text-align: left;
+          border-color: transparent;
+        }
+
+        tr:hover
+        {
+            background-color: transparent !important;
+        }
+
+        .error
+        {
+            color: #FF0000;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type = "text/javascript"></script>
+</head>
+<body>
+    <span id="errorField1" class="error" hidden="true">Error: </span><span id="errorField2"></span><br>
+    <input type="button" value="Load Defaults"  onclick="location.href='/reset'"/>
+    <form method="get" action="/auth" id="configForm">
+    <hr />
+    <table>
+        <tr>
+            <td>
+                <b>Host: </b>
+            </td>
+            <td>
+                <input name="hostField" type="text" style="width:20em" value="{{Host}}" id="hostField" />
+            </td>
+            <td>
+                <b>Port:</b>
+            </td>
+            <td>
+                <input name="portField" type="text" style="width:20em" value="{{Port}}" id="portField" />
+            </td>
+            <td>
+                <input id="schemeField" type="checkbox" name="schemeField" {{HTTPS}} />
+                HTTPS
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>App ID:</b>
+            </td>
+            <td>
+                <input name="appIDField" type="text" style="width:20em" value="{{AppID}}" id="appIDField" />
+            </td>
+            <td>
+                <b>App Key:</b>
+            </td>
+            <td>
+                <input name="appKeyField" type="text" style="width:20em" value="{{AppKey}}" id="appKeyField" />
+            </td>
+        </tr>
+    </table>
+    <div id="userDiv">
+        <br />
+        <span>This information is returned by the authentication server and is valid only for this application:</span>
+        <table>
+            <tr>
+                <td>
+                    <b>User ID:</b>
+                </td>
+                <td>
+                    <input type="text" name="userIDField" id="userIDField" style="width:20em" value="{{UserID}}" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>User Key:</b>
+                </td>
+                <td>
+                    <input type="text" name="userKeyField" id="userKeyField" style="width:20em" value="{{UserKey}}" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <input type="submit" value="Authenticate" id="authenticateBtn" /><br>
+    <input type="submit" value="Save" id="manualAuthBtn" hidden=true />
+    </form>
+    <input type="button" id="deauthBtn" value="Deauthenticate" onclick="location.href='/logout'"/>
+    <span id="authNotice">Note: to authenticate against the test server, you can user username
+                          "sampleapiuser" and password "Tisabiiif".
+    </span><br /><br />
+    <input type="button" id="manualBtn" value="Manually set credentials" onclick="setCredentials()" />
+
+    <hr />
+    <table>
+        <tr>
+            <td>
+                <b>Examples:</b>
+            </td>
+            <td>
+                <button type="button" onclick="exampleGetVersions()">
+                    Get Versions</button>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" onclick="exampleWhoAmI()">
+                    WhoAmI</button>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" onclick="exampleCreateUser()">
+                    Create User</button>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <b>Method:</b>&nbsp;
+    <input value="GET" name="method" type="radio" id="GETField" checked="checked" onclick="hideData()" />GET
+    &nbsp;
+    <input value="POST" name="method" type="radio" id="POSTField" onclick="showData()" />POST
+    &nbsp;
+    <input value="PUT" name="method" type="radio" id="PUTField" onclick="showData()" />PUT
+    &nbsp;
+    <input value="DELETE" name="method" type="radio" id="DELETEField" onclick="hideData()" />DELETE<br />
+    <b>Action:</b>&nbsp;<input name="actionField" type="text" id="actionField" style="width:600px;" /><br />
+    <b id="dataFieldLabel">Data:</b><br />
+    <textarea name="dataField" rows="2" cols="20" id="dataField" style="height:400px;width:600px;">
+</textarea><br />
+    <b id="responseFieldLabel" hidden=true>Response:</b><br />
+    <textarea name="responseField" hidden=true rows="2" cols="20" id="responseField" style="height:400px;width:600px;">
+</textarea><br />
+    <input type="button" name="submitButton" value="Submit" id="submitButton" onclick="doAPIRequest()"/>
+
+</body>
+<script type="text/javascript">
+    function showData() {
+        document.getElementById("dataFieldLabel").hidden = false;
+        document.getElementById("dataField").hidden=false;
+    }
+
+    function hideData() {
+        document.getElementById("dataFieldLabel").hidden = true;
+        document.getElementById("dataField").hidden=true;
+    }
+
+    function exampleGetVersions() {
+        hideData();
+        document.getElementById("GETField").checked = true;
+        document.getElementById("actionField").value = "/d2l/api/versions/";
+    }
+
+    function exampleWhoAmI() {
+        hideData();
+        document.getElementById("GETField").checked = true;
+        document.getElementById("actionField").value = "/d2l/api/lp/1.0/users/whoami";
+    }
+
+    function exampleCreateUser() {
+        showData();
+        document.getElementById("POSTField").checked = true;
+        document.getElementById("actionField").value = "/d2l/api/lp/1.0/users/";
+        document.getElementById("dataField").value = "{\n  \"OrgDefinedId\": \"<string>\",\n  \"FirstName\": \"<string>\",\n  \"MiddleName\": \"<string>\",\n  \"LastName\": \"<string>\",\n  \"ExternalEmail\": \"<string>|null\",\n  \"UserName\": \"<string>\",\n  \"RoleId\": \"<number>\",\n  \"IsActive\": \"<boolean>\",\n  \"SendCreationEmail\": \"<boolean>\"\n}";
+    }
+
+    function setCredentials() {
+        document.getElementById("manualAuthBtn").hidden = false;
+        document.getElementById("deauthBtn").hidden = true;
+        document.getElementById("userDiv").hidden = false;
+        document.getElementById("userIDField").hidden = false;
+        document.getElementById("userKeyField").hidden = false;
+        document.getElementById("manualBtn").hidden = true;
+        document.getElementById("authenticateBtn").hidden = true;
+        document.getElementById("authNotice").hidden = true;
+    }
+
+    hideData();
+
+    if(document.getElementById("userIDField").value != "") {
+        document.getElementById("deauthBtn").hidden = false;
+        document.getElementById("userIDField").disabled = true;
+        document.getElementById("userKeyField").disabled = true;
+        document.getElementById("manualBtn").hidden = true;
+        document.getElementById("authenticateBtn").hidden = true;
+        document.getElementById("authNotice").hidden = true;
+        document.getElementById("hostField").disabled = true;
+        document.getElementById("portField").disabled = true;
+        document.getElementById("appKeyField").disabled = true;
+        document.getElementById("appIDField").disabled = true;
+    } else {
+        document.getElementById("deauthBtn").hidden = true;
+        document.getElementById("userIDField").hidden = true;
+        document.getElementById("userKeyField").hidden = true;
+        document.getElementById("userDiv").hidden = true;
+        document.getElementById("hostField").disabled = false;
+        document.getElementById("portField").disabled = false;
+        document.getElementById("appKeyField").disabled = false;
+        document.getElementById("appIDField").disabled = false;
+    }
+
+
+var ee;
+    function doAPIRequest() {
+        document.getElementById('responseField').hidden = true;
+        document.getElementById('errorField1').hidden = true;
+        document.getElementById('errorField2').innerHTML = '';
+        var method;
+        if($('#GETField').is(':checked')) {
+            method = 'GET';
+        } else if($('#POSTField').is(':checked')) {
+            method = 'POST';
+        } else if($('#PUTField').is(':checked')) {
+            method = 'PUT';
+        } else {
+            method = 'DELETE';
+        }
+        $.ajax({
+            url: '/call',
+            data: {
+                req: $('#actionField').val(),
+                method: method,
+                data: $('#dataField').val()
+            },
+            success: function(e, xhr, settings) {
+                if(e == '') { var output = 'No response (success).'; }
+                else {
+                    try {
+                        var output = JSON.stringify(JSON.parse(e), null, '\t');
+                    } catch(e) {
+                        var output = 'Error parsing response as JSON: ' + e.toString();
+                    }
+                }
+                $('#responseField').val(output);
+                document.getElementById('responseField').hidden = false;
+            },
+            error: function(event, xhr, settings, error) {
+                document.getElementById('errorField1').hidden = false;
+                document.getElementById('errorField2').innerHTML = event.status;
+            },
+        });
+    }
+</script>
+</html>

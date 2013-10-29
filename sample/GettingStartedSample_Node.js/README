@@ -1,0 +1,6 @@
+First, install the necessary packages:
+npm install mu2
+npm install express
+
+To run the server:
+node server.js

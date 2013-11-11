@@ -4,3 +4,5 @@ npm install express
 
 To run the server:
 node server.js
+
+This sample depends on the lib/ folder living two directories above.

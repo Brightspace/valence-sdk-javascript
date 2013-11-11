@@ -3,7 +3,8 @@ D2L Javascript API Sample
 INSTALLATION
 ------------
 To deploy, simply add valence.js and sha.js to your web page.
-(This is already done in this sample).
+If you are copying the valence-sdk-javascript file to your webpage, they will be in the lib folder, two directories above.
+If you are deploying this sample as a standalone you may wish to copy the lib/ folder into this folder directly.
 
 
 DEPENDENCIES

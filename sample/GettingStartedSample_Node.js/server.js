@@ -77,7 +77,7 @@ app.get('/auth', function(req, res) {
     var appContext = new D2L.ApplicationContext('localhost', props.AppID, props.AppKey);
     var callback = 'http://' + req.header('host');
     var url = props.Scheme + '://' + appContext.createUrlForAuthentication(props.Host, props.Port, callback);
-    res.redirect(url, 307);
+    res.redirect(url, 303);
 });
 
 app.get('/call', function(req, res) {
@@ -89,7 +89,7 @@ app.get('/call', function(req, res) {
         res.end();
         return;
     }
-    var url = userContext.createUrlForAuthentication(req.param('req'), req.param('method'));
+    var url = userContext.createAuthenticatedUrl(req.param('req'), req.param('method'));
     var method = req.param('method');
     var options = {
         host: props.Host,

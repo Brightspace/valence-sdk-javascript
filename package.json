@@ -1,0 +1,28 @@
+{
+  "name": "valence",
+  "description": "JavaScript Valence SDK",
+  "version": "1.0.1",
+  "homepage": "http://docs.valence.desire2learn.com",
+  "author": {
+    "name": "Desire2Learn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Desire2Learn-Valence/valence-sdk-javascript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Desire2Learn-Valence/valence-sdk-javascript/issues"
+  },
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
+  "dependencies": {
+  },
+  "main": "lib/valence",
+  "engines": {
+    "node": ">=0.10"
+  }
+}

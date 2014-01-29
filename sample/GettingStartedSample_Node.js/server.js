@@ -37,7 +37,7 @@ function setProps(req, update) {
     else if(update) props.Scheme = req.param('schemeField') ? 'https' : 'http';
     props.HTTPS = props.Scheme === 'http' ? '' : 'checked="true"';
 
-    props.Host = req.param('hostField') || props.Host || 'valence.desire2learn.com';
+    props.Host = req.param('hostField') || props.Host || 'lms.valence.desire2learn.com';
     props.Port = req.param('portField') || props.Port || '443';
 
     props.AppKey = req.param('appKeyField') || props.AppKey || 'ybZu7fm_JKJTFwKEHfoZ7Q';

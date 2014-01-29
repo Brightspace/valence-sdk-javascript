@@ -26,7 +26,7 @@ To run the Getting Started sample:
 2) Point your browser to 'index.html'
 3) Click on the 'Authenticate' button
 	- You should be redirected to the Desire2Learn login page
-	  hosted on https://valence.desire2learn.com.
+	  hosted on https://lms.valence.desire2learn.com.
 	- Fill out your username and password.
 	- Click '>>Login'.
 	- You should be redirected back to your application.

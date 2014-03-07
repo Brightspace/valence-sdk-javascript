@@ -20,6 +20,8 @@
     }
   ],
   "dependencies": {
+    "mu2": "~0.5.20",
+    "express": "~3.5.0"
   },
   "main": "lib/valence",
   "engines": {

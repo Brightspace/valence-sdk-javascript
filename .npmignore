@@ -1,6 +1,8 @@
 .gitignore
 .npmignore
 
-sample
+.travis.yml
 spec
 coverage
+
+sample

@@ -24,11 +24,13 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec spec"
+    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec spec",
+    "report-cov": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "devDependencies": {
     "chai": "^1.9.1",
     "mocha": "^1.18.2",
-    "istanbul": "^0.2.7"
+    "istanbul": "^0.2.7",
+    "coveralls": "^2.10.0"
   }
 }

@@ -1,0 +1,16 @@
+{
+  "name": "valence-sample",
+  "version": "0.0.0",
+  "description": "Sample Server/Client pair for using the valence authentication sdk",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Desire2Learn Inc.",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "mu2": "~0.5.20",
+    "express": "~3.5.1"
+  }
+}

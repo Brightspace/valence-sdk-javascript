@@ -19,10 +19,6 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   ],
-  "devDependencies": {
-    "mu2": "~0.5.20",
-    "express": "~3.5.0"
-  },
   "main": "lib/valence",
   "engines": {
     "node": ">=0.10"

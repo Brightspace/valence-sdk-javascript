@@ -1,11 +1,10 @@
 'use strict';
 
-var expect = require('chai').expect,
-	url = require('url');
+var expect = require('chai').expect;
 
 var D2L = require('../');
 
-describe('D2L.Util.pareFromUrl', function () {
+describe('D2L.Util.parseFromUrl', function () {
 	it('should return empty string when not present', function (done) {
 		var result = D2L.Util.parseFromUrl('abc', '/api/lp/1.4/whoami?foo=bar');
 		expect(result).to.equal('');

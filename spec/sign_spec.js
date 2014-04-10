@@ -1,7 +1,6 @@
 'use strict';
 
-var expect = require('chai').expect,
-	url = require('url');
+var expect = require('chai').expect;
 
 var D2L = require('../');
 

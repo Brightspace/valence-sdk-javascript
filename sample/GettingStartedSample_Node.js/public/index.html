@@ -1,0 +1,196 @@
+<!--
+	D2LValence package, js api.
+
+	Copyright (c) 2012 Desire2Learn Inc.
+
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not
+	use this file except in compliance with the License. You may obtain a copy of
+	the license at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+	License for the specific language governing permissions and limitations under
+	the License.
+ -->
+
+<!doctype html>
+<html>
+<head>
+	<title>Desire2Learn Valence Auth SDK Sample</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<style type="text/css">
+		body { max-width: 700px; margin: 0 auto; }
+		form { position: relative; }
+		.loginInfo { position: absolute; left: calc(100% + 20px); top: 10px; padding: 10px;  border-radius: 5px; }
+	</style>
+</head>
+<body>
+	<form method="get" action="/auth">
+		<div class="host form-group">
+			<label for="host">Host</label>
+			<input class="form-control" type="text" required value="lms.valence.desire2learn.com" id="host" name="host">
+		</div>
+
+		<div class="port form-group">
+			<label for="port">Port</label>
+			<input class="form-control" type="number" required min="1" max="65535" value="443" id="port" name="port">
+		</div>
+
+		<div class="scheme form-group">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" checked id="scheme" name="scheme">
+					HTTPS?
+				</label>
+			</div>
+		</div>
+
+		<input class="btn btn-primary" type="submit" value="Authenticate">
+
+		<aside class="loginInfo bg-info small">
+			Credentials for lms.valence.desire2learn.com
+			<dl>
+				<dt>Username</dt>
+				<dd><kbd>sampleapiuser</kbd></dd>
+
+				<dt>Password</dt>
+				<dd><kbd>Tisabiiif</kbd></dd>
+			</dl>
+		</aside>
+	</form>
+
+	<hr>
+
+	<div>
+		<div class="form-group">
+			<label>Method</label>
+			<div class="radio">
+				<label>
+					<input type="radio" name="method" id="get" value="get" checked>
+					GET
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="method" id="post" value="post">
+					POST
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="method" id="put" value="put">
+					PUT
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="method" id="delete" value="del">
+					DELETE
+				</label>
+			</div>
+		</div>
+
+		<div class="form-group hidden">
+			<label  for="body">Body</label>
+			<textarea class="form-control" id="body" name="body"></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="path">Path</label>
+			<input class="form-control" type="text" value="/d2l/api/lp/1.0/users/whoami" id="path" name="path">
+		</div>
+
+		<button class="btn btn-primary" id="call">Call</button>
+	</div>
+
+	<hr>
+
+	<div class="form-group">
+		<label>Result</label>
+		<div id="result">
+			<pre id="resultStatus"></pre>
+			<pre id="resultBody"></pre>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/superagent/superagent.js"></script>
+	<script type="text/javascript">
+		(function () {
+			'use strict';
+
+			var host = document.getElementById('host'),
+				port = document.getElementById('port'),
+				scheme = document.getElementById('scheme'),
+				methods = document.querySelectorAll('input[name="method"]'),
+				path = document.getElementById('path'),
+				body = document.getElementById('body');
+
+			function getSelectedMethod () {
+				return document.querySelector('input[name="method"]:checked').value;
+			}
+
+			function getLmsInfo () {
+				return {
+					host: host.value,
+					port: port.value,
+					scheme: scheme.checked
+				};
+			}
+
+			function getCallInfo () {
+				return {
+					method: getSelectedMethod(),
+					path: path.value,
+					body: body.value
+				};
+			}
+
+			function getAuth () {
+				return {
+					search: window.location.search
+				};
+			}
+
+			function useBody () {
+				return ['post', 'put'].indexOf(getSelectedMethod()) !== -1;
+			}
+
+			document
+				.getElementById('call')
+				.addEventListener('click', function () {
+					var lms = getLmsInfo(),
+						call = getCallInfo(),
+						auth = getAuth();
+
+					superagent[call.method]('/call')
+						.query({
+							host: lms.host,
+							port: lms.port,
+							scheme: lms.scheme,
+							path: call.path,
+							auth: auth.search
+						})
+						.type('json')
+						.send(useBody() && call.body || '')
+						.end(function (err, res) {
+							document.getElementById('resultStatus').textContent = res.status;
+							document.getElementById('resultBody').textContent = JSON.stringify(res.body, undefined, '\t');
+						});
+				});
+
+			function maybeHideBody () {
+				useBody()
+					? body.parentElement.classList.remove('hidden')
+					: body.parentElement.classList.add('hidden');
+			}
+
+			for (var i = 0; i < methods.length; ++i) {
+				methods[i].addEventListener('click', maybeHideBody);
+			}
+		})();
+	</script>
+</body>
+</html>

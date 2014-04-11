@@ -16,116 +16,84 @@
  * the License.
  */
 
-var express = require('express');
-var mu = require('mu2');
-var util = require('util');
-var http = require('http');
-var https = require('https');
-var D2L = require('../../lib/valence.js');
+var D2L = require('../../lib/valence.js'),
+	express = require('express'),
+	request = require('superagent'),
+	util = require('util');
 
-var app = express();
-var store = new express.session.MemoryStore;
+var app = express(),
+	appId = process.env.APP_ID || 'G9nUpvbZQyiPrk3um2YAkQ',
+	appKey = process.env.APP_KEY || 'ybZu7fm_JKJTFwKEHfoZ7Q',
+	appContext = new D2L.ApplicationContext('localhost', appId, appKey);
 
-app.use(express.cookieParser());
-app.use(express.session({ secret: 'SuperSecretKeyForCookies', store: store }));
+app
+	.get(
+		'/auth',
+		getLmsData,
+		function (req, res, next) {
+			var callbackTarget = 'http://' + req.header('host'),
+				getTokensUrl = util
+					.format(
+						'%s//%s',
+						req.lms.scheme,
+						appContext.createUrlForAuthentication(req.lms.host, req.lms.port, callbackTarget)
+					);
+			res
+				.status(303)
+				.set('Location', getTokensUrl)
+				.end();
+		})
 
-function setProps(req, update) {
-    req.session.props = req.session.props || {};
-    var props = req.session.props;
+	.all(
+		'/call',
+		getLmsData,
+		function (req, res, next) {
+			var authCallbackSearch = req.param('auth'),
+				userContext = appContext
+					.createUserContext(req.lms.scheme + '//' + req.lms.host, req.lms.port, authCallbackSearch);
 
-    if(typeof props.Scheme === 'undefined') props.Scheme = 'https';
-    else if(update) props.Scheme = req.param('schemeField') ? 'https' : 'http';
-    props.HTTPS = props.Scheme === 'http' ? '' : 'checked="true"';
+			var path = req.param('path'),
+				method = req.method.toLowerCase();
 
-    props.Host = req.param('hostField') || props.Host || 'lms.valence.desire2learn.com';
-    props.Port = req.param('portField') || props.Port || '443';
+			var apiCallUrl = userContext.createAuthenticatedUrl(path, method),
+				apiCall = request[method === 'delete' ? 'del' : method](apiCallUrl);
 
-    props.AppKey = req.param('appKeyField') || props.AppKey || 'ybZu7fm_JKJTFwKEHfoZ7Q';
-    props.AppID = req.param('appIDField') || props.AppID || 'G9nUpvbZQyiPrk3um2YAkQ';
+			if (['post', 'put'].indexOf(method) !== -1) {
+				apiCall.type('application/json');
+				req.pipe(apiCall);
+			}
 
-    var appContext = new D2L.ApplicationContext('localhost', '', '');
-    var userContext = appContext.createUserContext(props.Host, props.Port, req.header('host') + req.url);
-    if(typeof userContext !== 'undefined' && userContext.userId) {
-        props.UserID = userContext.userId;
-        props.UserKey = userContext.userKey;
-    }
+			apiCall.end(function (err, apiRes) {
+				if (err) {
+					res
+						.status(500)
+						.end();
+					console.error(err);
+					return;
+				}
 
-    req.session.props = props;
-    return props;
+				res
+					.status(apiRes.status)
+					.set('Content-Type', apiRes.headers['content-type'])
+					.end(apiRes.text);
+			});
+		}
+	)
+
+	.use('/', express.static(__dirname + '/public'))
+	.use('/superagent', express.static(__dirname + '/node_modules/superagent'));
+
+function getLmsData (req, res, next) {
+	req.lms = {
+		host: req.param('host'),
+		port: req.param('port'),
+		scheme: req.param('scheme') ? 'https:' : 'http:'
+	};
+
+	next();
 }
 
-app.get('/', function(req, res) {
-    var props = setProps(req);
-    var stream = mu.compileAndRender('index.html', props);
-    util.pump(stream, res);
-});
-
-app.get('/reset', function(req, res) {
-    req.session.props = {};
-    res.redirect('/');
-});
-
-app.get('/logout', function(req, res) {
-    req.session.props = req.session.props || {}
-    req.session.props.UserID = undefined;
-    req.session.props.UserKey = undefined;
-    res.redirect('/');
-});
-
-app.get('/auth', function(req, res) {
-    var props = setProps(req, true);
-    var appContext = new D2L.ApplicationContext('localhost', props.AppID, props.AppKey);
-    var callback = 'http://' + req.header('host');
-    var url = props.Scheme + '://' + appContext.createUrlForAuthentication(props.Host, props.Port, callback);
-    res.redirect(url, 303);
-});
-
-app.get('/call', function(req, res) {
-    var props = setProps(req);
-    var appContext = new D2L.ApplicationContext('localhost', props.AppID, props.AppKey);
-    var userContext = appContext.createUserContextWithValues(props.Host, props.Port, props.UserID, props.UserKey);
-    if(typeof userContext === 'undefined') {
-        res.writeHead(500);
-        res.end();
-        return;
-    }
-    var url = userContext.createAuthenticatedUrl(req.param('req'), req.param('method'));
-    var method = req.param('method');
-    var options = {
-        host: props.Host,
-        port: props.Port,
-        path: url.replace(/^[^\/]*/, ''),
-        method: method
-    };
-    if(method == 'PUT' || method == 'POST') {
-        options.headers = {
-            'Content-Type': 'application/json',
-            'Content-Length': req.param('data').length,
-        };
-    }
-
-    var foo = props.Scheme === 'https' ? https : http;
-    var req2 = foo.request(options, function(res2) {
-        var data = '';
-        res.writeHead(res2.statusCode, { 'Content-Type': 'text/plain' });
-        res2.setEncoding('utf8')
-        res2.on('data', function(chunk) { data += chunk; });
-        res2.on('end', function() {
-            res.end(data);
-        });
-    });
-
-    req2.on('error', function(e) {
-        console.log('Error: ' + e.message);
-        res.redirect('/');
-    });
-
-    if(method == 'PUT' || method == 'POST') {
-        req2.write(req.param('data'));
-    }
-
-    req2.end();
-});
-
-app.listen(10099);
-console.log("listening on port: " + 10099);
+console.log(
+	'Open your browser to http://localhost:%d',
+	require('http').createServer(app).listen(10099).address().port
+);

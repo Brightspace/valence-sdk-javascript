@@ -52,6 +52,14 @@ app
 				userContext = appContext
 					.createUserContext(req.lms.scheme + '//' + req.lms.host, req.lms.port, authCallbackSearch);
 
+			if (!userContext.userId || !userContext.userKey) {
+				var userId = req.param('userId'),
+					userKey = req.param('userKey');
+
+				userContext = appContext
+					.createUserContextWithValues(req.lms.scheme + '//' + req.lms.host, req.lms.port, userId, userKey);
+			}
+
 			var path = req.param('path'),
 				method = req.method.toLowerCase();
 

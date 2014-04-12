@@ -24,7 +24,7 @@
 	<style type="text/css">
 		body { max-width: 700px; margin: 0 auto; }
 		form { position: relative; }
-		.loginInfo { position: absolute; left: calc(100% + 20px); top: 10px; padding: 10px;  border-radius: 5px; }
+		.loginInfo { position: absolute; left: calc(100% + 20px); top: 10px; }
 	</style>
 </head>
 <body>
@@ -48,17 +48,41 @@
 			</div>
 		</div>
 
-		<input class="btn btn-primary" type="submit" value="Authenticate">
+		<div class="row">
+			<div class="col-md-5 text-center">
+				<input class="btn btn-primary" type="submit" value="Authenticate">
+			</div>
+			<div class="col-md-2 text-center">
+				OR
+			</div>
+			<div class="col-md-5">
+				<div class="form-group">
+					<label for="userId">UserId</label>
+					<input class="form-control" type="text" id="userId">
+				</div>
 
-		<aside class="loginInfo bg-info small">
-			Credentials for lms.valence.desire2learn.com
-			<dl>
-				<dt>Username</dt>
-				<dd><kbd>sampleapiuser</kbd></dd>
+				<div class="form-group">
+					<label for="userKey">UserKey</label>
+					<input class="form-control" type="text" id="userKey">
+				</div>
+			</div>
+		</div>
 
-				<dt>Password</dt>
-				<dd><kbd>Tisabiiif</kbd></dd>
-			</dl>
+		<aside class="loginInfo panel panel-info small">
+			<header class="panel-heading">
+				Credentials
+			</header>
+			<div class="panel-body">
+				<p>You can log in to <em>lms.valence.desire2learn.com</em> using the following credentials</p>
+
+				<dl>
+					<dt>Username</dt>
+					<dd><kbd>sampleapiuser</kbd></dd>
+
+					<dt>Password</dt>
+					<dd><kbd>Tisabiiif</kbd></dd>
+				</dl>
+			</div>
 		</aside>
 	</form>
 
@@ -66,31 +90,23 @@
 
 	<div>
 		<div class="form-group">
-			<label>Method</label>
-			<div class="radio">
-				<label>
-					<input type="radio" name="method" id="get" value="get" checked>
-					GET
-				</label>
-			</div>
-			<div class="radio">
-				<label>
-					<input type="radio" name="method" id="post" value="post">
-					POST
-				</label>
-			</div>
-			<div class="radio">
-				<label>
-					<input type="radio" name="method" id="put" value="put">
-					PUT
-				</label>
-			</div>
-			<div class="radio">
-				<label>
-					<input type="radio" name="method" id="delete" value="del">
-					DELETE
-				</label>
-			</div>
+			<label>Method </label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="get" value="get" checked>
+				GET
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="post" value="post">
+				POST
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="put" value="put">
+				PUT
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="delete" value="del">
+				DELETE
+			</label>
 		</div>
 
 		<div class="form-group hidden">
@@ -124,6 +140,8 @@
 			var host = document.getElementById('host'),
 				port = document.getElementById('port'),
 				scheme = document.getElementById('scheme'),
+				userId = document.getElementById('userId'),
+				userKey = document.getElementById('userKey'),
 				methods = document.querySelectorAll('input[name="method"]'),
 				path = document.getElementById('path'),
 				body = document.getElementById('body');
@@ -150,7 +168,9 @@
 
 			function getAuth () {
 				return {
-					search: window.location.search
+					search: window.location.search,
+					userId: userId.value,
+					userKey: userKey.value
 				};
 			}
 
@@ -171,7 +191,9 @@
 							port: lms.port,
 							scheme: lms.scheme,
 							path: call.path,
-							auth: auth.search
+							auth: auth.search,
+							userId: auth.userId,
+							userKey: auth.userKey
 						})
 						.type('json')
 						.send(useBody() && call.body || '')

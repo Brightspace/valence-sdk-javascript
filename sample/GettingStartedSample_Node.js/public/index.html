@@ -23,12 +23,12 @@
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<style type="text/css">
 		body { max-width: 700px; margin: 0 auto; }
-		form { position: relative; }
-		.loginInfo { position: absolute; left: calc(100% + 20px); top: 10px; }
+		.auth-area, .request-area { position: relative; }
+		.loginInfo, .examples { position: absolute; left: calc(100% + 20px); top: 10px; }
 	</style>
 </head>
 <body>
-	<form method="get" action="/auth">
+	<form method="get" action="/auth" class="auth-area">
 		<div class="host form-group">
 			<label for="host">Host</label>
 			<input class="form-control" type="text" required value="lms.valence.desire2learn.com" id="host" name="host">
@@ -88,7 +88,7 @@
 
 	<hr>
 
-	<div>
+	<div class="request-area">
 		<div class="form-group">
 			<label>Method </label>
 			<label class="radio-inline">
@@ -120,6 +120,21 @@
 		</div>
 
 		<button class="btn btn-primary" id="call">Call</button>
+
+		<aside class="examples panel panel-info small">
+			<header class="panel-heading">
+				Examples
+			</header>
+			<div class="panel-body">
+				<p>Try some of these examples for a quick start</p>
+
+				<ul style="white-space: nowrap;">
+					<li><a href id="get-versions">Get versions</a></li>
+					<li><a href id="who-am-i">Who am I?</a></li>
+					<li><a href id="create-user">Create a user</a></li>
+				</ul>
+			</div>
+		</aside>
 	</div>
 
 	<hr>
@@ -212,6 +227,40 @@
 			for (var i = 0; i < methods.length; ++i) {
 				methods[i].addEventListener('click', maybeHideBody);
 			}
+
+			// Examples
+			var getVersions = document.getElementById('get-versions'),
+				whoAmI = document.getElementById('who-am-i'),
+				createUser = document.getElementById('create-user');
+
+			getVersions.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[0].checked = true; maybeHideBody();
+				path.value = '/d2l/api/versions/';
+			});
+
+			whoAmI.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[0].checked = true; maybeHideBody();
+				path.value = '/d2l/api/lp/1.0/users/whoami';
+			});
+
+			createUser.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[1].checked = true; maybeHideBody();
+				path.value = '/d2l/api/lp/1.0/users/';
+				body.value = JSON.stringify({
+					OrgDefinedId: '<string>',
+					FirstName: '<string>',
+					MiddleName: '<string>',
+					LastName: '<string>',
+					ExternalEmail: '<string>|null',
+					UserName: '<string>',
+					RoleId: '<number>',
+					IsActive: '<boolean>',
+					SendCreationEmail: '<boolean>'
+				}, undefined, '\t');
+			});
 		})();
 	</script>
 </body>

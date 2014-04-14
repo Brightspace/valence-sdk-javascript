@@ -9,8 +9,8 @@
   },
   "author": "Desire2Learn Inc.",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "mu2": "~0.5.20",
-    "express": "~3.5.1"
+  "dependencies": {
+    "superagent": "~0.17.0",
+    "express": "~4.0.0"
   }
 }

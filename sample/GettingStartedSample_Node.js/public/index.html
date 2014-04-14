@@ -1,0 +1,267 @@
+<!--
+	D2LValence package, js api.
+
+	Copyright (c) 2012 Desire2Learn Inc.
+
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not
+	use this file except in compliance with the License. You may obtain a copy of
+	the license at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+	License for the specific language governing permissions and limitations under
+	the License.
+ -->
+
+<!doctype html>
+<html>
+<head>
+	<title>Desire2Learn Valence Auth SDK Sample</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<style type="text/css">
+		body { max-width: 700px; margin: 0 auto; }
+		.auth-area, .request-area { position: relative; }
+		.loginInfo, .examples { position: absolute; left: calc(100% + 20px); top: 10px; }
+	</style>
+</head>
+<body>
+	<form method="get" action="/auth" class="auth-area">
+		<div class="host form-group">
+			<label for="host">Host</label>
+			<input class="form-control" type="text" required value="lms.valence.desire2learn.com" id="host" name="host">
+		</div>
+
+		<div class="port form-group">
+			<label for="port">Port</label>
+			<input class="form-control" type="number" required min="1" max="65535" value="443" id="port" name="port">
+		</div>
+
+		<div class="scheme form-group">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" checked id="scheme" name="scheme">
+					HTTPS?
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-5 text-center">
+				<input class="btn btn-primary" type="submit" value="Authenticate">
+			</div>
+			<div class="col-md-2 text-center">
+				OR
+			</div>
+			<div class="col-md-5">
+				<div class="form-group">
+					<label for="userId">UserId</label>
+					<input class="form-control" type="text" id="userId">
+				</div>
+
+				<div class="form-group">
+					<label for="userKey">UserKey</label>
+					<input class="form-control" type="text" id="userKey">
+				</div>
+			</div>
+		</div>
+
+		<aside class="loginInfo panel panel-info small">
+			<header class="panel-heading">
+				Credentials
+			</header>
+			<div class="panel-body">
+				<p>You can log in to <em>lms.valence.desire2learn.com</em> using the following credentials</p>
+
+				<dl>
+					<dt>Username</dt>
+					<dd><kbd>sampleapiuser</kbd></dd>
+
+					<dt>Password</dt>
+					<dd><kbd>Tisabiiif</kbd></dd>
+				</dl>
+			</div>
+		</aside>
+	</form>
+
+	<hr>
+
+	<div class="request-area">
+		<div class="form-group">
+			<label>Method </label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="get" value="get" checked>
+				GET
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="post" value="post">
+				POST
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="put" value="put">
+				PUT
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="method" id="delete" value="del">
+				DELETE
+			</label>
+		</div>
+
+		<div class="form-group hidden">
+			<label  for="body">Body</label>
+			<textarea class="form-control" id="body" name="body"></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="path">Path</label>
+			<input class="form-control" type="text" value="/d2l/api/lp/1.0/users/whoami" id="path" name="path">
+		</div>
+
+		<button class="btn btn-primary" id="call">Call</button>
+
+		<aside class="examples panel panel-info small">
+			<header class="panel-heading">
+				Examples
+			</header>
+			<div class="panel-body">
+				<p>Try some of these examples for a quick start</p>
+
+				<ul style="white-space: nowrap;">
+					<li><a href id="get-versions">Get versions</a></li>
+					<li><a href id="who-am-i">Who am I?</a></li>
+					<li><a href id="create-user">Create a user</a></li>
+				</ul>
+			</div>
+		</aside>
+	</div>
+
+	<hr>
+
+	<div class="form-group">
+		<label>Result</label>
+		<div id="result">
+			<pre id="resultStatus"></pre>
+			<pre id="resultBody"></pre>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/superagent/superagent.js"></script>
+	<script type="text/javascript">
+		(function () {
+			'use strict';
+
+			var host = document.getElementById('host'),
+				port = document.getElementById('port'),
+				scheme = document.getElementById('scheme'),
+				userId = document.getElementById('userId'),
+				userKey = document.getElementById('userKey'),
+				methods = document.querySelectorAll('input[name="method"]'),
+				path = document.getElementById('path'),
+				body = document.getElementById('body');
+
+			function getSelectedMethod () {
+				return document.querySelector('input[name="method"]:checked').value;
+			}
+
+			function getLmsInfo () {
+				return {
+					host: host.value,
+					port: port.value,
+					scheme: scheme.checked
+				};
+			}
+
+			function getCallInfo () {
+				return {
+					method: getSelectedMethod(),
+					path: path.value,
+					body: body.value
+				};
+			}
+
+			function getAuth () {
+				return {
+					search: window.location.search,
+					userId: userId.value,
+					userKey: userKey.value
+				};
+			}
+
+			function useBody () {
+				return ['post', 'put'].indexOf(getSelectedMethod()) !== -1;
+			}
+
+			document
+				.getElementById('call')
+				.addEventListener('click', function () {
+					var lms = getLmsInfo(),
+						call = getCallInfo(),
+						auth = getAuth();
+
+					superagent[call.method]('/call')
+						.query({
+							host: lms.host,
+							port: lms.port,
+							scheme: lms.scheme,
+							path: call.path,
+							auth: auth.search,
+							userId: auth.userId,
+							userKey: auth.userKey
+						})
+						.type('json')
+						.send(useBody() && call.body || '')
+						.end(function (err, res) {
+							document.getElementById('resultStatus').textContent = res.status;
+							document.getElementById('resultBody').textContent = JSON.stringify(res.body, undefined, '\t');
+						});
+				});
+
+			function maybeHideBody () {
+				useBody()
+					? body.parentElement.classList.remove('hidden')
+					: body.parentElement.classList.add('hidden');
+			}
+
+			for (var i = 0; i < methods.length; ++i) {
+				methods[i].addEventListener('click', maybeHideBody);
+			}
+
+			// Examples
+			var getVersions = document.getElementById('get-versions'),
+				whoAmI = document.getElementById('who-am-i'),
+				createUser = document.getElementById('create-user');
+
+			getVersions.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[0].checked = true; maybeHideBody();
+				path.value = '/d2l/api/versions/';
+			});
+
+			whoAmI.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[0].checked = true; maybeHideBody();
+				path.value = '/d2l/api/lp/1.0/users/whoami';
+			});
+
+			createUser.addEventListener('click', function (e) {
+				e.preventDefault();
+				methods[1].checked = true; maybeHideBody();
+				path.value = '/d2l/api/lp/1.0/users/';
+				body.value = JSON.stringify({
+					OrgDefinedId: '<string>',
+					FirstName: '<string>',
+					MiddleName: '<string>',
+					LastName: '<string>',
+					ExternalEmail: '<string>|null',
+					UserName: '<string>',
+					RoleId: '<number>',
+					IsActive: '<boolean>',
+					SendCreationEmail: '<boolean>'
+				}, undefined, '\t');
+			});
+		})();
+	</script>
+</body>
+</html>

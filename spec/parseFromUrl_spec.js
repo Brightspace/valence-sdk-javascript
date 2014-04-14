@@ -5,6 +5,12 @@ var expect = require('chai').expect;
 var D2L = require('../');
 
 describe('D2L.Util.parseFromUrl', function () {
+	it('should return empty string when no params are present', function (done) {
+		var result = D2L.Util.parseFromUrl('abc', '/api/lp/1.4/whoami');
+		expect(result).to.equal('');
+		done();
+	});
+
 	it('should return empty string when not present', function (done) {
 		var result = D2L.Util.parseFromUrl('abc', '/api/lp/1.4/whoami?foo=bar');
 		expect(result).to.equal('');

@@ -29,7 +29,7 @@ app
 	.get(
 		'/auth',
 		getLmsData,
-		function (req, res, next) {
+		function (req, res/*, next*/) {
 			var callbackTarget = 'http://' + req.header('host'),
 				getTokensUrl = appContext
 					.createUrlForAuthentication(req.lms.scheme + '//' + req.lms.host, req.lms.port, callbackTarget);
@@ -43,7 +43,7 @@ app
 	.all(
 		'/call',
 		getLmsData,
-		function (req, res, next) {
+		function (req, res/*, next*/) {
 			var authCallbackSearch = req.param('auth'),
 				userContext = appContext
 					.createUserContext(req.lms.scheme + '//' + req.lms.host, req.lms.port, authCallbackSearch);

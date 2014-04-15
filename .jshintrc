@@ -1,0 +1,14 @@
+{
+	"node": true,
+	"trailing": true,
+	"undef": true,
+	"unused": true,
+	"laxbreak": true,
+	"-W030": true,
+	"globals": {
+		"describe": true,
+		"it": true,
+		"before": true,
+		"after": true
+	}
+}

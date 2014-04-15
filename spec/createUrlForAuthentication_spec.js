@@ -8,7 +8,7 @@ var D2L = require('../');
 describe('D2L.ApplicationContext.createUrlForAuthentication', function () {
 	var appContext;
 	before(function (done) {
-		appContext = new D2L.ApplicationContext('apitesttool.desire2learnvalence.com', 'foo', 'bar');
+		appContext = new D2L.ApplicationContext('foo', 'bar');
 		done();
 	});
 

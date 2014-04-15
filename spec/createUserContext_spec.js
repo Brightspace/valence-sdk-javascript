@@ -8,7 +8,7 @@ describe('D2L.ApplicationContext.createUserContext', function () {
 	var appContext,
 		url = 'https://apitesttool.desire2learnvalence.com/?x_a=someUserId&x_b=someUserToken&x_c=someSignatureThatTotallyDoesntMatter';
 	before(function (done) {
-		appContext = new D2L.ApplicationContext('apitesttool.desire2learnvalence.com', 'foo', 'bar');
+		appContext = new D2L.ApplicationContext('foo', 'bar');
 		done();
 	});
 

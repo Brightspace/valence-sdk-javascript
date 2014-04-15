@@ -51,4 +51,34 @@ describe('D2L.Util.getTokenUrl', function () {
 		});
 		done();
 	});
+
+	it('should omit port 80 for http urls', function (done) {
+		var tokenUrl = D2L.Util.getTokenUrl(
+			'http://someserver',
+			'/',
+			80,
+			{
+				'abc': 'xyz'
+			}
+		);
+
+		expect(tokenUrl).to.equal('http://someserver/?abc=xyz');
+
+		done();
+	});
+
+	it('should omit port 443 for https urls', function (done) {
+		var tokenUrl = D2L.Util.getTokenUrl(
+			'https://someserver',
+			'/',
+			443,
+			{
+				'abc': 'xyz'
+			}
+		);
+
+		expect(tokenUrl).to.equal('https://someserver/?abc=xyz');
+
+		done();
+	});
 });

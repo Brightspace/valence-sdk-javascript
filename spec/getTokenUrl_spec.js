@@ -64,7 +64,7 @@ describe('D2L.Util.getTokenUrl', function () {
 
 		expect(tokenUrl).to.equal('http://someserver/?abc=xyz');
 
-		done()
+		done();
 	});
 
 	it('should omit port 443 for https urls', function (done) {
@@ -79,6 +79,6 @@ describe('D2L.Util.getTokenUrl', function () {
 
 		expect(tokenUrl).to.equal('https://someserver/?abc=xyz');
 
-		done()
+		done();
 	});
 });

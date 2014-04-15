@@ -13,8 +13,9 @@ describe('D2L.ApplicationContext.createUrlForAuthentication', function () {
 	});
 
 	it('should return a signed url with host, port, appKey, callback', function (done) {
-		var result = url.parse('http://' + appContext.createUrlForAuthentication('cattle', 11111, 'https://apitesttool.desire2learnvalence.com/'), true);
+		var result = url.parse(appContext.createUrlForAuthentication('http://cattle', 11111, 'https://apitesttool.desire2learnvalence.com/'), true);
 
+		expect(result.protocol).to.equal('http:');
 		expect(result.hostname).to.equal('cattle');
 		expect(result.port).to.equal('11111');
 		expect(result.pathname).to.equal('/d2l/auth/api/token');

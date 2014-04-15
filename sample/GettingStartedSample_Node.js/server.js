@@ -18,8 +18,7 @@
 
 var D2L = require('../../lib/valence.js'),
 	express = require('express'),
-	request = require('superagent'),
-	util = require('util');
+	request = require('superagent');
 
 var app = express(),
 	appId = process.env.APP_ID || 'G9nUpvbZQyiPrk3um2YAkQ',
@@ -32,12 +31,9 @@ app
 		getLmsData,
 		function (req, res, next) {
 			var callbackTarget = 'http://' + req.header('host'),
-				getTokensUrl = util
-					.format(
-						'%s//%s',
-						req.lms.scheme,
-						appContext.createUrlForAuthentication(req.lms.host, req.lms.port, callbackTarget)
-					);
+				getTokensUrl = appContext
+					.createUrlForAuthentication(req.lms.scheme + '//' + req.lms.host, req.lms.port, callbackTarget);
+
 			res
 				.status(303)
 				.set('Location', getTokensUrl)

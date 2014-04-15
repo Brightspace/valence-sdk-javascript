@@ -12,9 +12,9 @@ describe('D2L.ApplicationContext.createUserContextWithValues', function () {
 	});
 
 	it('should use passed in host, port, userId, userKey and skew', function (done) {
-		var userContext = appContext.createUserContextWithValues('abc', 12345, 'someUserId', 'someUserKey', 100);
+		var userContext = appContext.createUserContextWithValues('http://abc', 12345, 'someUserId', 'someUserKey', 100);
 
-		expect(userContext.host).to.equal('abc');
+		expect(userContext.host).to.equal('http://abc');
 		expect(userContext.port).to.equal(12345);
 		expect(userContext.userId).to.equal('someUserId');
 		expect(userContext.userKey).to.equal('someUserKey');
@@ -23,14 +23,14 @@ describe('D2L.ApplicationContext.createUserContextWithValues', function () {
 	});
 
 	it('should default skew to 0', function (done) {
-		var userContext = appContext.createUserContextWithValues('abc', 12345, 'someUserId', 'someUserKey');
+		var userContext = appContext.createUserContextWithValues('http://abc', 12345, 'someUserId', 'someUserKey');
 
 		expect(userContext.skew).to.equal(0);
 		done();
 	});
 
 	it('should use appId and appKey from the application context', function (done) {
-		var userContext = appContext.createUserContextWithValues('abc', 12345, 'someUserId', 'someUserKey');
+		var userContext = appContext.createUserContextWithValues('http://abc', 12345, 'someUserId', 'someUserKey');
 
 		expect(userContext.appId).to.equal('foo');
 		expect(userContext.appKey).to.equal('bar');

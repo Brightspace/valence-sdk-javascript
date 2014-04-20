@@ -1,7 +1,8 @@
 'use strict';
 
 var expect = require('chai').expect,
-	url = require('url');
+	url = require('url'),
+	sinon = require('sinon');
 
 var D2L = require('../');
 
@@ -24,5 +25,26 @@ describe('D2L.UserContext.createAuthenticatedUrl', function () {
 
 		done();
 	});
-});
 
+	it('should create a properly signed url', function (done) {
+		sinon
+			.stub(D2L.Util, 'getTimestamp')
+			.returns(1397958932);
+
+		var result = url.parse(userContext.createAuthenticatedUrl('/d2l/api/lp/1.0/users/whoami?abc=xyz', 'GET'), true),
+			query = result.query;
+
+		D2L.Util.getTimestamp.restore();
+
+		expect(result.protocol).to.equal('http:');
+		expect(result.hostname).to.equal('somelms.edu');
+		expect(query.abc).to.equal('xyz');
+		expect(query.x_a).to.equal('foo');
+		expect(query.x_b).to.equal('baz');
+		expect(query.x_c).to.equal('eInA7Qr4HYQn8b8x6RoMPioxftBYbRsa3oiIFCZFTgU');
+		expect(query.x_d).to.equal('fkpwBDGOppT6DrsjJNxcsxFIaGo-RS3q3kmeJBwemc0');
+		expect(query.x_t).to.equal('1397958932');
+
+		done();
+	});
+});

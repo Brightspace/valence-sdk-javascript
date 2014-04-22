@@ -4,6 +4,11 @@
   "version": "1.0.3",
   "author": "Desire2Learn Inc.",
   "license": "Apache-2.0",
+  "keywords": [
+    "Desire2Learn",
+    "D2L",
+    "Valence"
+  ],
   "homepage": "http://docs.valence.desire2learn.com",
   "repository": {
     "type": "git",

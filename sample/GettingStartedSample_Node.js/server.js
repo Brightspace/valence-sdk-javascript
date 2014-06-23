@@ -91,7 +91,7 @@ function getLmsData (req, res, next) {
 	req.lms = {
 		host: req.param('host'),
 		port: req.param('port'),
-		scheme: req.param('scheme') ? 'https:' : 'http:'
+		scheme: req.param('scheme') === 'true' ? 'https:' : 'http:'
 	};
 
 	next();

@@ -16,7 +16,7 @@
  * the License.
  */
 
-var D2L = require('../../lib/valence.js'),
+var D2L = require('valence'),
 	express = require('express'),
 	request = require('superagent');
 

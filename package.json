@@ -22,7 +22,7 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec spec",
+    "test": "./node_modules/.bin/istanbul test -x \"**/spec/**\" ./node_modules/.bin/_mocha -- -R spec spec",
     "report-cov": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "devDependencies": {

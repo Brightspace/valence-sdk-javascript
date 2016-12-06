@@ -276,11 +276,11 @@
 
 	function init() {
 		var values = getCookie();
-		if(typeof values.host == 'undefined' || values.host === '') values.host = "lms.valence.desire2learn.com";
+		if(typeof values.host == 'undefined' || values.host === '') values.host = "devcop.brightspace.com";
 		if(typeof values.port == 'undefined' || values.port === '') values.port = 443;
 		if(typeof values.scheme == 'undefined' || values.scheme === '') values.scheme = "https";
-		if(typeof values.appId == 'undefined' || values.appId === '') values.appId = "G9nUpvbZQyiPrk3um2YAkQ";
-		if(typeof values.appKey == 'undefined' || values.appKey === '') values.appKey = "ybZu7fm_JKJTFwKEHfoZ7Q";
+		if(typeof values.appId == 'undefined' || values.appId === '') values.appId = "31brpbcCLsVim_K4jJ8vzw";
+		if(typeof values.appKey == 'undefined' || values.appKey === '') values.appKey = "sagYSTT_HOts39qrGQTFWA";
 		setCookie(values);
 
 		document.getElementById("hostField").value = values.host;

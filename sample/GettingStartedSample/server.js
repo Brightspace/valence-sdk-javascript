@@ -122,7 +122,7 @@ function authenticateUserResponse(host, port, appId, appKey) {
 
 $(document).ready(function() {
 	var appContext = new D2L.ApplicationContext('localhost', "", "");
-	var userContext = appContext.createUserContext("lms.valence.desire2learn.com", 443, window.location.href);
+	var userContext = appContext.createUserContext("devcop.brightspace.com", 443, window.location.href);
 	if(typeof userContext=="undefined"||typeof userContext.userId=="undefined"||userContext.userId=="") {
 		return;
 	}

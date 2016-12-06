@@ -21,8 +21,8 @@ var D2L = require('valence'),
 	request = require('superagent');
 
 var app = express(),
-	appId = process.env.APP_ID || 'G9nUpvbZQyiPrk3um2YAkQ',
-	appKey = process.env.APP_KEY || 'ybZu7fm_JKJTFwKEHfoZ7Q',
+	appId = process.env.APP_ID || '31brpbcCLsVim_K4jJ8vzw',
+	appKey = process.env.APP_KEY || 'sagYSTT_HOts39qrGQTFWA',
 	appContext = new D2L.ApplicationContext('localhost', appId, appKey);
 
 app

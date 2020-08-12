@@ -208,10 +208,10 @@
 							path: call.path,
 							auth: auth.search,
 							userId: auth.userId,
-							userKey: auth.userKey
+							userKey: auth.userKey,
+							body: useBody() && call.body || ''
 						})
 						.type('json')
-						.send(useBody() && call.body || '')
 						.end(function (err, res) {
 							document.getElementById('resultStatus').textContent = res.status;
 							document.getElementById('resultBody').textContent = JSON.stringify(res.body, undefined, '\t');

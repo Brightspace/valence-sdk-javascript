@@ -64,7 +64,7 @@ app
 
 			if (['post', 'put'].indexOf(method) !== -1) {
 				apiCall.type('application/json');
-				req.pipe(apiCall);
+				apiCall.send(req.param('body'));
 			}
 
 			apiCall.end(function (err, apiRes) {
